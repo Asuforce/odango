@@ -10,12 +10,12 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-func upload(commitID string) {
+func upload(commitID, host string) {
 	sshConfig := config.SSH
 	clientConfig, _ := auth.PrivateKey(sshConfig.UserName, sshConfig.KeyPath, ssh.InsecureIgnoreHostKey())
 
 	port := strconv.Itoa(sshConfig.Port)
-	hostname := sshConfig.Host + ":" + port
+	hostname := host + ":" + port
 	client := scp.NewClient(hostname, &clientConfig)
 
 	err := client.Connect()

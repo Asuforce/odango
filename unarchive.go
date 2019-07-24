@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-func unarchive(commitID string) {
+func unarchive(commitID, host string) {
 	sshConfig := config.SSH
 	c := &ssh.ClientConfig{
 		User: sshConfig.UserName,
@@ -20,7 +20,7 @@ func unarchive(commitID string) {
 	}
 
 	port := strconv.Itoa(sshConfig.Port)
-	hostname := sshConfig.Host + ":" + port
+	hostname := host + ":" + port
 	conn, err := ssh.Dial("tcp", hostname, c)
 	defer conn.Close()
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -17,19 +18,19 @@ func deployHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	commitID := r.URL.Path[len("/deploy/"):]
-	fmt.Fprintf(w, "CommitID is %s !\n", commitID)
 
 	downloadObject(commitID)
+
+	hosts := config.SSH.Hosts
+	for i := range hosts {
+		upload(commitID, hosts[i])
+		unarchive(commitID, hosts[i])
+	}
 }
 
 func main() {
 	config = readConfig(config)
-	commitID := "80d712d3fef760aa346985a837efdb37bb56cef0"
-	downloadObject(commitID)
-	upload(commitID)
-	unarchive(commitID)
 
-	// http.HandleFunc("/deploy/", deployHandler)
-
-	// log.Fatal(http.ListenAndServe(":8080", nil))
+	http.HandleFunc("/deploy/", deployHandler)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

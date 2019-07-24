@@ -28,7 +28,7 @@ type bucketConfig struct {
 type sshConfig struct {
 	UserName string `toml:"user_name"`
 	KeyPath  string `toml:"key_path"`
-	Host     string
+	Hosts    []string
 	Port     int
 }
 
