@@ -9,7 +9,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 )
 
-type gongchaConfig struct {
+type goriginConfig struct {
 	Server     serverConfig
 	Credential credentialConfig
 	Bucket     bucketConfig
@@ -49,10 +49,10 @@ type deployConfig struct {
 	DestDir    string `toml:"dest_dir"`
 }
 
-func readConfig(config gongchaConfig) gongchaConfig {
+func readConfig(config goriginConfig) goriginConfig {
 	home, _ := homedir.Dir()
 	checkConfigFile(home)
-	if _, err := toml.DecodeFile(home +"/.credential.toml", &config); err != nil {
+	if _, err := toml.DecodeFile(home+"/.credential.toml", &config); err != nil {
 		exitErrorf("Unable to credential file, %v", err)
 		os.Exit(1)
 	}
@@ -60,7 +60,7 @@ func readConfig(config gongchaConfig) gongchaConfig {
 }
 
 func checkConfigFile(home string) {
-	f, err := os.OpenFile(home +"/.credential.toml", os.O_WRONLY|os.O_CREATE, 0755)
+	f, err := os.OpenFile(home+"/.credential.toml", os.O_WRONLY|os.O_CREATE, 0755)
 	if err != nil {
 		log.Fatal(err)
 	}

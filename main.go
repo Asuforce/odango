@@ -6,9 +6,9 @@ import (
 	"net/http"
 )
 
-var config gongchaConfig
+var config goriginConfig
 
-const workDir = "/tmp/gongcha/" // TODO: Check when lunch gongcha
+const workDir = "/tmp/gorigin/" // TODO: Check when lunch
 
 func deployHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
