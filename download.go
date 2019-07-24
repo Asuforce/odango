@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
-func downloadObject(commitID string) {
+func download(commitID string) {
 	credential := config.Credential
 	sess := session.Must(session.NewSession(&aws.Config{
 		Credentials:      credentials.NewStaticCredentials(credential.AccessKey, credential.SecretKey, ""),

@@ -19,7 +19,7 @@ func deployHandler(w http.ResponseWriter, r *http.Request) {
 
 	commitID := r.URL.Path[len("/deploy/"):]
 
-	downloadObject(commitID)
+	download(commitID)
 
 	hosts := config.SSH.Hosts
 	for i := range hosts {
