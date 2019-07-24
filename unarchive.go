@@ -25,8 +25,27 @@ func unarchive(commitID, host string) {
 	}
 	hostname := host + ":" + port
 	conn, err := ssh.Dial("tcp", hostname, c)
+	if err != nil {
+		panic(err)
+	}
 	defer conn.Close()
 
+	runCmd(conn, commitID)
+}
+
+func publicKey(path string) ssh.AuthMethod {
+	key, err := ioutil.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	signer, err := ssh.ParsePrivateKey(key)
+	if err != nil {
+		panic(err)
+	}
+	return ssh.PublicKeys(signer)
+}
+
+func runCmd(conn *ssh.Client, commitID string) {
 	sess, err := conn.NewSession()
 	if err != nil {
 		panic(err)
@@ -50,16 +69,4 @@ func unarchive(commitID, host string) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func publicKey(path string) ssh.AuthMethod {
-	key, err := ioutil.ReadFile(path)
-	if err != nil {
-		panic(err)
-	}
-	signer, err := ssh.ParsePrivateKey(key)
-	if err != nil {
-		panic(err)
-	}
-	return ssh.PublicKeys(signer)
 }
