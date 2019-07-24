@@ -8,6 +8,7 @@ type gongchaConfig struct {
 	Credential credentialConfig
 	Bucket     bucketConfig
 	SSH        sshConfig `toml:"ssh"`
+	Deploy     deployConfig
 }
 type credentialConfig struct {
 	AccessKey        string `toml:"access_key"`
@@ -25,11 +26,15 @@ type bucketConfig struct {
 }
 
 type sshConfig struct {
-	UserName    string `toml:"user_name"`
-	KeyPath     string `toml:"key_path"`
-	Host        string
-	Port        int
-	Destination string
+	UserName string `toml:"user_name"`
+	KeyPath  string `toml:"key_path"`
+	Host     string
+	Port     int
+}
+
+type deployConfig struct {
+	ArchiveDir string `toml:"archive_dir"`
+	DestDir    string `toml:"dest_dir"`
 }
 
 func readConfig(config gongchaConfig) gongchaConfig {

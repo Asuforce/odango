@@ -27,6 +27,7 @@ func main() {
 	commitID := "80d712d3fef760aa346985a837efdb37bb56cef0"
 	downloadObject(commitID)
 	upload(commitID)
+	unarchive(commitID)
 
 	// http.HandleFunc("/deploy/", deployHandler)
 

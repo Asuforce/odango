@@ -30,7 +30,7 @@ func upload(commitID string) {
 	defer client.Close()
 	defer f.Close()
 
-	dest := sshConfig.Destination + commitID + config.Bucket.Extension
+	dest := config.Deploy.ArchiveDir + commitID + config.Bucket.Extension
 	err = client.CopyFile(f, dest, "0755")
 	if err != nil {
 		exitErrorf("Error while copying file: %v", err)
