@@ -20,6 +20,9 @@ func unarchive(commitID, host string) {
 	}
 
 	port := strconv.Itoa(sshConfig.Port)
+	if port == "0" {
+		port = "22"
+	}
 	hostname := host + ":" + port
 	conn, err := ssh.Dial("tcp", hostname, c)
 	defer conn.Close()

@@ -15,6 +15,9 @@ func upload(commitID, host string) {
 	clientConfig, _ := auth.PrivateKey(sshConfig.UserName, sshConfig.KeyPath, ssh.InsecureIgnoreHostKey())
 
 	port := strconv.Itoa(sshConfig.Port)
+	if port == "0" {
+		port = "22"
+	}
 	hostname := host + ":" + port
 	client := scp.NewClient(hostname, &clientConfig)
 
