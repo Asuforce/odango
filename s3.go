@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/BurntSushi/toml"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -12,29 +11,14 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
-type Config struct {
-	AccessKey        string `toml:"access_key"`
-	SecretKey        string `toml:"secret_key"`
-	Endpoint         string
-	Region           string
-	DisableSSL       bool `toml:"disable_ssl"`
-	S3ForcePathStyle bool `toml:"s3_force_path_style"`
-	Bucket           string
-	Path             string
-	Extension        string
-}
-
 func downloadObject(commitID string) {
-	var conf Config
-	if _, err := toml.DecodeFile("credential.toml", &conf); err != nil {
-		exitErrorf("Unable to credential file, %v", err)
-	}
+	credential := config.Credential
 	sess := session.Must(session.NewSession(&aws.Config{
-		Credentials:      credentials.NewStaticCredentials(conf.AccessKey, conf.SecretKey, ""),
-		Endpoint:         aws.String(conf.Endpoint),
-		Region:           aws.String(conf.Region),
-		DisableSSL:       aws.Bool(conf.DisableSSL),
-		S3ForcePathStyle: aws.Bool(conf.S3ForcePathStyle),
+		Credentials:      credentials.NewStaticCredentials(credential.AccessKey, credential.SecretKey, ""),
+		Endpoint:         aws.String(credential.Endpoint),
+		Region:           aws.String(credential.Region),
+		DisableSSL:       aws.Bool(credential.DisableSSL),
+		S3ForcePathStyle: aws.Bool(credential.S3ForcePathStyle),
 	}))
 
 	workDir := "/tmp/gongcha/" // TODO: Check when lunch gongcha
@@ -42,18 +26,19 @@ func downloadObject(commitID string) {
 		os.Mkdir(workDir, 0755)
 	}
 
-	filename := commitID + conf.Extension
+	bucket := config.Bucket
+	filename := commitID + bucket.Extension
 	fullPath := workDir + filename
 	file, err := os.Create(fullPath)
 	defer file.Close()
 
-	key := conf.Path + "/" + filename
+	key := bucket.Path + "/" + filename
 	fmt.Println("Download: " + key)
 
 	downloader := s3manager.NewDownloader(sess)
 	_, err = downloader.Download(file,
 		&s3.GetObjectInput{
-			Bucket: aws.String(conf.Bucket),
+			Bucket: aws.String(bucket.Name),
 			Key:    aws.String(key),
 		})
 

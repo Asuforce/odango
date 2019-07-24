@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+var config gongchaConfig
+
 func deployHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -20,6 +22,8 @@ func deployHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	readConfig(config)
+
 	http.HandleFunc("/deploy/", deployHandler)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
