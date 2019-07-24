@@ -1,10 +1,13 @@
 package main
 
-import "github.com/BurntSushi/toml"
+import (
+	"github.com/BurntSushi/toml"
+)
 
 type gongchaConfig struct {
 	Credential credentialConfig
 	Bucket     bucketConfig
+	SSH        sshConfig `toml:"ssh"`
 }
 type credentialConfig struct {
 	AccessKey        string `toml:"access_key"`
@@ -21,8 +24,17 @@ type bucketConfig struct {
 	Extension string
 }
 
-func readConfig(config gongchaConfig) {
+type sshConfig struct {
+	UserName    string `toml:"user_name"`
+	KeyPath     string `toml:"key_path"`
+	Host        string
+	Port        int
+	Destination string
+}
+
+func readConfig(config gongchaConfig) gongchaConfig {
 	if _, err := toml.DecodeFile("credential.toml", &config); err != nil {
 		exitErrorf("Unable to credential file, %v", err)
 	}
+	return config
 }

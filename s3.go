@@ -21,7 +21,6 @@ func downloadObject(commitID string) {
 		S3ForcePathStyle: aws.Bool(credential.S3ForcePathStyle),
 	}))
 
-	workDir := "/tmp/gongcha/" // TODO: Check when lunch gongcha
 	if _, err := os.Stat(workDir); os.IsNotExist(err) {
 		os.Mkdir(workDir, 0755)
 	}
@@ -49,5 +48,5 @@ func downloadObject(commitID string) {
 
 func exitErrorf(msg string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, msg+"\n", args...)
-	os.Exit(1)
+	return
 }

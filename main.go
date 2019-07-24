@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 )
 
 var config gongchaConfig
+
+const workDir = "/tmp/gongcha/" // TODO: Check when lunch gongcha
 
 func deployHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -22,9 +23,12 @@ func deployHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	readConfig(config)
+	config = readConfig(config)
+	commitID := "80d712d3fef760aa346985a837efdb37bb56cef0"
+	downloadObject(commitID)
+	upload(commitID)
 
-	http.HandleFunc("/deploy/", deployHandler)
+	// http.HandleFunc("/deploy/", deployHandler)
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	// log.Fatal(http.ListenAndServe(":8080", nil))
 }
