@@ -1,4 +1,4 @@
-module github.com/Asuforce/gongcha
+module github.com/Asuforce/gorigin
 
 go 1.12
 
