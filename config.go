@@ -52,7 +52,7 @@ type deployConfig struct {
 func readConfig(config goriginConfig) goriginConfig {
 	home, _ := homedir.Dir()
 	checkConfigFile(home)
-	if _, err := toml.DecodeFile(home+"/.credential.toml", &config); err != nil {
+	if _, err := toml.DecodeFile(home+"/.gorigin", &config); err != nil {
 		exitErrorf("Unable to credential file, %v", err)
 		os.Exit(1)
 	}
@@ -60,14 +60,13 @@ func readConfig(config goriginConfig) goriginConfig {
 }
 
 func checkConfigFile(home string) {
-	f, err := os.OpenFile(home+"/.credential.toml", os.O_WRONLY|os.O_CREATE, 0755)
+	f, err := os.OpenFile(home+"/.gorigin", os.O_WRONLY|os.O_CREATE, 0755)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 
-	config := `
-[server]
+	config := `[server]
 endpoint = "deploy" # Optional
 port = 8080 # Optional
 
@@ -93,7 +92,6 @@ port = 22 # Optional
 [deploy]
 archive_dir = ""
 dest_dir = ""
-
 `
 
 	fmt.Fprintln(f, config)
