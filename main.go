@@ -26,11 +26,23 @@ func deployHandler(w http.ResponseWriter, r *http.Request) {
 		upload(commitID, hosts[i])
 		unarchive(commitID, hosts[i])
 	}
+	fmt.Fprint(w, "Deploy success.\n")
 }
 
 func main() {
 	config = readConfig(config)
 
-	http.HandleFunc("/deploy/", deployHandler)
+	port := config.Server.Port
+	if port == 0 {
+		port = 8080
+	}
+
+	endpoint := config.Server.Endpoint
+	if endpoint == "" {
+		endpoint = "deploy"
+	}
+	http.HandleFunc("/"+endpoint+"/", deployHandler)
+
+	fmt.Printf("Running server on port: %d endpoint: /%s\nType Ctr-c to shutdown server.\n", port, endpoint)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

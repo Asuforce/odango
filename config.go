@@ -5,11 +5,18 @@ import (
 )
 
 type gongchaConfig struct {
+	Server     serverConfig
 	Credential credentialConfig
 	Bucket     bucketConfig
 	SSH        sshConfig `toml:"ssh"`
 	Deploy     deployConfig
 }
+
+type serverConfig struct {
+	Endpoint string
+	Port     int
+}
+
 type credentialConfig struct {
 	AccessKey        string `toml:"access_key"`
 	SecretKey        string `toml:"secret_key"`
