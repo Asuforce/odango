@@ -6,9 +6,9 @@ import (
 	"net/http"
 )
 
-var config goriginConfig
+var config odangoConfig
 
-const workDir = "/tmp/gorigin/" // TODO: Check when lunch
+const workDir = "/tmp/odango/" // TODO: Check when lunch
 
 func deployHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
