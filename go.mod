@@ -1,4 +1,4 @@
-module github.com/Asuforce/gorigin
+module github.com/Asuforce/odango
 
 go 1.12
 

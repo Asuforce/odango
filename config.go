@@ -9,7 +9,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 )
 
-type goriginConfig struct {
+type odangoConfig struct {
 	Server     serverConfig
 	Credential credentialConfig
 	Bucket     bucketConfig
@@ -49,10 +49,10 @@ type deployConfig struct {
 	DestDir    string `toml:"dest_dir"`
 }
 
-func readConfig(config goriginConfig) goriginConfig {
+func readConfig(config odangoConfig) odangoConfig {
 	home, _ := homedir.Dir()
 	checkConfigFile(home)
-	if _, err := toml.DecodeFile(home+"/.gorigin", &config); err != nil {
+	if _, err := toml.DecodeFile(home+"/.odango", &config); err != nil {
 		exitErrorf("Unable to credential file, %v", err)
 		os.Exit(1)
 	}
@@ -60,7 +60,7 @@ func readConfig(config goriginConfig) goriginConfig {
 }
 
 func checkConfigFile(home string) {
-	f, err := os.OpenFile(home+"/.gorigin", os.O_WRONLY|os.O_CREATE, 0755)
+	f, err := os.OpenFile(home+"/.odango", os.O_WRONLY|os.O_CREATE, 0755)
 	if err != nil {
 		log.Fatal(err)
 	}
