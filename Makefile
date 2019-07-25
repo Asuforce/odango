@@ -30,7 +30,7 @@ crossbuild: devel-deps
 .PHONY: release
 release: devel-deps
 	_tools/release.sh
-	_tools/upload_artifacts
+	_tools/upload_artifacts.sh
 
 .PHONY: lint
 lint:
