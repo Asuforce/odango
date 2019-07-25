@@ -60,12 +60,6 @@ func readConfig(config odangoConfig) odangoConfig {
 }
 
 func checkConfigFile(home string) {
-	f, err := os.OpenFile(home+"/.odango", os.O_WRONLY|os.O_CREATE, 0755)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-
 	config := `[server]
 endpoint = "deploy" # Optional
 port = 8080 # Optional
@@ -94,5 +88,14 @@ archive_dir = ""
 dest_dir = ""
 `
 
-	fmt.Fprintln(f, config)
+	var file *os.File
+	_, err := os.Stat(home+"/.odango")
+	if err != nil {
+		file, err = os.Create(home+"/.odango")
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	defer file.Close()
+	fmt.Fprint(file, config)
 }
