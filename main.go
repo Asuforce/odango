@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-var config odangoConfig
+var config Config
 
 const workDir = "/tmp/odango/" // TODO: Check when lunch
 
@@ -30,7 +30,7 @@ func deployHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	config = readConfig(config)
+	config = Config{}
 
 	port := config.Server.Port
 	if port == 0 {

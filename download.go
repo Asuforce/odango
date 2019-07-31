@@ -31,7 +31,7 @@ func download(commitID string) {
 	file, err := os.Create(fullPath)
 	defer file.Close()
 
-	key := bucket.Path + "/" + filename
+	key := bucket.Path + filename
 	fmt.Println("Download: " + key)
 
 	downloader := s3manager.NewDownloader(sess)
