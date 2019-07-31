@@ -11,6 +11,7 @@ func TestFormatPath(t *testing.T) {
 		{"/foo", "/foo/"},
 		{"bar/", "/bar/"},
 		{"/buz/", "/buz/"},
+		{"hoge", "/hoge/"},
 	}
 
 	for _, tt := range tests {
