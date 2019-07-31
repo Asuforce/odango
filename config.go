@@ -9,7 +9,9 @@ import (
 	"github.com/mitchellh/go-homedir"
 )
 
-type odangoConfig struct {
+// Config is odango configuration structure
+type Config struct {
+	home       string
 	Server     serverConfig
 	Credential credentialConfig
 	Bucket     bucketConfig
@@ -49,17 +51,29 @@ type deployConfig struct {
 	DestDir    string `toml:"dest_dir"`
 }
 
-func readConfig(config odangoConfig) odangoConfig {
-	home, _ := homedir.Dir()
-	checkConfigFile(home)
-	if _, err := toml.DecodeFile(home+"/.odango", &config); err != nil {
+func (c *Config) readConfig() {
+	c.home, _ = homedir.Dir()
+	if !c.hasFile() {
+		c.createFile()
+	}
+
+	if _, err := toml.DecodeFile(c.home+"/.odango", &c); err != nil {
 		exitErrorf("Unable to credential file, %v", err)
 		os.Exit(1)
 	}
-	return config
 }
 
-func checkConfigFile(home string) {
+func (c *Config) hasFile() bool {
+	var file *os.File
+	_, err := os.Stat(c.home + "/.odango")
+	if err != nil {
+		return false
+	}
+	defer file.Close()
+	return true
+}
+
+func (c *Config) createFile() {
 	config := `[server]
 endpoint = "deploy" # Optional
 port = 8080 # Optional
@@ -88,13 +102,9 @@ archive_dir = ""
 dest_dir = ""
 `
 
-	var file *os.File
-	_, err := os.Stat(home+"/.odango")
+	file, err := os.Create(c.home + "/.odango")
 	if err != nil {
-		file, err = os.Create(home+"/.odango")
-		if err != nil {
-			log.Fatal(err)
-		}
+		log.Fatal(err)
 	}
 	defer file.Close()
 	fmt.Fprint(file, config)
