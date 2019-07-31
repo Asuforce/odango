@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 	"github.com/mitchellh/go-homedir"
@@ -62,6 +63,8 @@ func (c *Config) readConfig() {
 	if _, err := toml.DecodeFile(c.home+"/.odango", &c); err != nil {
 		log.Fatalf("Unable to credential file, %v", err)
 	}
+
+	c.checkFormat()
 }
 
 func (c *Config) hasFile() bool {
@@ -109,4 +112,20 @@ dest_dir = ""
 	}
 	defer file.Close()
 	fmt.Fprint(file, config)
+}
+
+func (c *Config) checkFormat() {
+	c.Bucket.Path = c.formatPath(c.Bucket.Path)
+	c.Deploy.ArchiveDir = c.formatPath(c.Deploy.ArchiveDir)
+	c.Deploy.DestDir = c.formatPath(c.Deploy.DestDir)
+}
+
+func (c *Config) formatPath(s string) string {
+	if !strings.HasPrefix(s, "/") {
+		s = "/" + s
+	}
+	if !strings.HasSuffix(s, "/") {
+		s = s + "/"
+	}
+	return s
 }
