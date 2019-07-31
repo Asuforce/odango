@@ -60,8 +60,7 @@ func (c *Config) readConfig() {
 	}
 
 	if _, err := toml.DecodeFile(c.home+"/.odango", &c); err != nil {
-		exitErrorf("Unable to credential file, %v", err)
-		os.Exit(1)
+		log.Fatalf("Unable to credential file, %v", err)
 	}
 }
 
@@ -106,7 +105,7 @@ dest_dir = ""
 
 	file, err := os.Create(c.home + "/.odango")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to create configuration file, %v", err)
 	}
 	defer file.Close()
 	fmt.Fprint(file, config)
