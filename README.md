@@ -12,6 +12,8 @@ Upload the file from CI to obejct storage and odango will handle it for you.
 
 ![Odango - Architecture](/doc/img/architecture.png)
 
+CI task is only ①. Odango handles ② to ④.
+
 ## Usage
 
 ### Configuration
@@ -82,21 +84,20 @@ WantedBy = multi-user.target
 ### Linux
 
 ```sh
-(deploy server) $ curl -sL https://github.com/Asuforce/odango/releases/download/v0.0.1/odango_v0.0.1_linux_amd64.tar.gz |
+$ curl -sL https://github.com/Asuforce/odango/releases/download/v0.0.1/odango_v0.0.1_linux_amd64.tar.gz |
   sudo tar xz \
   -C /usr/local/bin \
   --strip=1 '*/odango' \
   --no-same-owner \
   --no-same-permissions
-
 ```
 
 ### Mac
 
 ```sh
-(deploy server) $ curl -sL -o odango.zip https://github.com/Asuforce/odango/releases/download/v0.0.1/odango_v0.0.1_darwin_amd64.zip
-(deploy server) $ unzip odango.zip
-(deploy server) $ sudo mv odango/odango /usr/local/bin
+$ curl -sL -o odango.zip https://github.com/Asuforce/odango/releases/download/v0.0.1/odango_v0.0.1_darwin_amd64.zip
+$ unzip odango.zip
+$ sudo mv odango/odango /usr/local/bin
 ```
 
 ### Windows
