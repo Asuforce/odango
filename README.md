@@ -104,6 +104,16 @@ $ sudo mv odango/odango /usr/local/bin
 
 TBD
 
+## Contribution
+
+1. Fork ([https://github.com/Asuforce/odango/fork](https://github.com/Asuforce/odango/fork))
+1. Create a feature branch
+1. Commit your changes
+1. Rebase your local changes against the master branch
+1. Run test suite with the `make test` command and confirm that it passes
+1. Run `make fmt`
+1. Create new Pull Request
+
 ## License
 
 This software is released under the MIT License, see [LICENSE](https://github.com/Asuforce/odango/blob/master/LICENSE)
