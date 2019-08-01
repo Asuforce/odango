@@ -104,6 +104,10 @@ $ sudo mv odango/odango /usr/local/bin
 
 TBD
 
+## License
+
+This software is released under the MIT License, see [LICENSE](https://github.com/Asuforce/odango/blob/master/LICENSE)
+
 ## Author
 
 [Asuforce](https://github.com/Asuforce)
