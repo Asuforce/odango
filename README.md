@@ -14,6 +14,12 @@ Upload the file from CI to obejct storage and odango will handle it for you.
 
 CI task is only ①. Odango handles ② to ④.
 
+## Requirements
+
+- CI or something to uplad tarball for S3 (or S3 compatible object storage)
+- Create Odango server (LINUX recommended)
+- Allow Odango server to SSH to Deployment target
+
 ## Usage
 
 ### Configuration
