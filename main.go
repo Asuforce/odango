@@ -38,10 +38,7 @@ func main() {
 	}
 
 	endpoint := config.Server.Endpoint
-	if endpoint == "" {
-		endpoint = "deploy"
-	}
-	http.HandleFunc("/"+endpoint+"/", deployHandler)
+	http.HandleFunc(endpoint, deployHandler)
 
 	fmt.Printf("Running server on port: %d endpoint: /%s\nType Ctr-c to shutdown server.\n", port, endpoint)
 	log.Fatal(http.ListenAndServe(":8080", nil))

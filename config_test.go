@@ -3,7 +3,6 @@ package main
 import "testing"
 
 func TestFormatPath(t *testing.T) {
-	c := Config{}
 
 	tests := []struct {
 		i, o string
@@ -15,7 +14,7 @@ func TestFormatPath(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if c.formatPath(tt.i) != tt.o {
+		if formatPath(tt.i) != tt.o {
 			t.Fatalf("want = %s, got = %s", tt.o, tt.i)
 		}
 	}

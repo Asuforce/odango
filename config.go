@@ -117,19 +117,9 @@ dest_dir = ""
 }
 
 func (c *Config) checkFormat() {
-	c.Bucket.Path = c.formatPath(c.Bucket.Path)
-	c.Deploy.ArchiveDir = c.formatPath(c.Deploy.ArchiveDir)
-	c.Deploy.DestDir = c.formatPath(c.Deploy.DestDir)
-}
-
-func (c *Config) formatPath(s string) string {
-	if !strings.HasPrefix(s, "/") {
-		s = "/" + s
-	}
-	if !strings.HasSuffix(s, "/") {
-		s = s + "/"
-	}
-	return s
+	c.Bucket.Path = formatPath(c.Bucket.Path)
+	c.Deploy.ArchiveDir = formatPath(c.Deploy.ArchiveDir)
+	c.Deploy.DestDir = formatPath(c.Deploy.DestDir)
 }
 
 func (c *Config) validate() {
@@ -173,4 +163,14 @@ func (c *Config) validate() {
 
 func isZero(x interface{}) bool {
 	return reflect.DeepEqual(x, reflect.Zero(reflect.TypeOf(x)).Interface())
+}
+
+func formatPath(s string) string {
+	if !strings.HasPrefix(s, "/") {
+		s = "/" + s
+	}
+	if !strings.HasSuffix(s, "/") {
+		s = s + "/"
+	}
+	return s
 }
