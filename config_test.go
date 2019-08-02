@@ -19,3 +19,23 @@ func TestFormatPath(t *testing.T) {
 		}
 	}
 }
+
+func TestValidateEndpoint(t *testing.T) {
+	c := Config{}
+	tests := []struct {
+		i, o string
+	}{
+		{"", "/deploy/"},
+		{"deploy", "/deploy/"},
+		{"/deploy", "/deploy/"},
+		{"deploy/", "/deploy/"},
+	}
+
+	for _, tt := range tests {
+		c.Server.Endpoint = tt.i
+		c.validateEndpoint()
+		if c.Server.Endpoint != tt.o {
+			t.Fatalf("want = %s, got = %s", tt.o, tt.i)
+		}
+	}
+}

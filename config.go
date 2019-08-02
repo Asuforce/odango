@@ -65,6 +65,7 @@ func (c *Config) readConfig() {
 		log.Fatalf("Unable to credential file, %v", err)
 	}
 
+	c.validateEndpoint()
 	c.validate()
 	c.checkFormat()
 }
@@ -123,9 +124,6 @@ func (c *Config) checkFormat() {
 }
 
 func (c *Config) validate() {
-	if isZero(c.Server.Endpoint) {
-		c.Server.Endpoint = "deploy"
-	}
 	if isZero(c.Server.Port) {
 		c.Server.Port = 8080
 	}
@@ -159,6 +157,14 @@ func (c *Config) validate() {
 	if isZero(c.Deploy.DestDir) {
 		log.Fatal("Please set the deploy dest_dir")
 	}
+}
+
+func (c *Config) validateEndpoint() {
+	if isZero(c.Server.Endpoint) {
+		c.Server.Endpoint = "/deploy/"
+		return
+	}
+	c.Server.Endpoint = formatPath(c.Server.Endpoint)
 }
 
 func isZero(x interface{}) bool {
