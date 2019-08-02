@@ -66,7 +66,7 @@ func (c *Config) readConfig() {
 	}
 
 	c.validateEndpoint()
-	c.validatePort()
+	c.validateAccessKey()
 	c.validate()
 	c.checkFormat()
 }
@@ -166,6 +166,12 @@ func (c *Config) validatePort() {
 	if isZero(c.Server.Port) {
 		c.Server.Port = 8080
 		return
+	}
+}
+
+func (c *Config) validateAccessKey() {
+	if isZero(c.Credential.AccessKey) {
+		log.Fatal("Please set the credential access_key")
 	}
 }
 

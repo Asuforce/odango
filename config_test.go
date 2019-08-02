@@ -58,3 +58,13 @@ func TestValidatePort(t *testing.T) {
 		}
 	}
 }
+
+func TestValidateAccessKey(t *testing.T) {
+	c := Config{}
+
+	c.Credential.AccessKey = "asdf1234"
+	c.validateAccessKey()
+	if c.Credential.AccessKey != "asdf1234" {
+		t.Fatalf("want = %s, got = empty", "asdf1234")
+	}
+}
