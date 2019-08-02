@@ -66,6 +66,7 @@ func (c *Config) readConfig() {
 	}
 
 	c.validateEndpoint()
+	c.validatePort()
 	c.validate()
 	c.checkFormat()
 }
@@ -124,12 +125,6 @@ func (c *Config) checkFormat() {
 }
 
 func (c *Config) validate() {
-	if isZero(c.Server.Port) {
-		c.Server.Port = 8080
-	}
-	if isZero(c.Credential.AccessKey) {
-		log.Fatal("Please set the credential access_key")
-	}
 	if isZero(c.Credential.SecretKey) {
 		log.Fatal("Please set the credential secret_key")
 	}
@@ -165,6 +160,13 @@ func (c *Config) validateEndpoint() {
 		return
 	}
 	c.Server.Endpoint = formatPath(c.Server.Endpoint)
+}
+
+func (c *Config) validatePort() {
+	if isZero(c.Server.Port) {
+		c.Server.Port = 8080
+		return
+	}
 }
 
 func isZero(x interface{}) bool {

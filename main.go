@@ -32,14 +32,9 @@ func deployHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	config = Config{}
 
-	port := config.Server.Port
-	if port == 0 {
-		port = 8080
-	}
-
 	endpoint := config.Server.Endpoint
 	http.HandleFunc(endpoint, deployHandler)
 
-	fmt.Printf("Running server on port: %d endpoint: /%s\nType Ctr-c to shutdown server.\n", port, endpoint)
+	fmt.Printf("Running server on port: %d endpoint: /%s\nType Ctr-c to shutdown server.\n", config.Server.Port, endpoint)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

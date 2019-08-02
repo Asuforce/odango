@@ -39,3 +39,22 @@ func TestValidateEndpoint(t *testing.T) {
 		}
 	}
 }
+
+func TestValidatePort(t *testing.T) {
+	c := Config{}
+	tests := []struct {
+		i, o int
+	}{
+		{0, 8080},
+		{8080, 8080},
+		{3000, 3000},
+	}
+
+	for _, tt := range tests {
+		c.Server.Port = tt.i
+		c.validatePort()
+		if c.Server.Port != tt.o {
+			t.Fatalf("want = %d, got = %d", tt.o, tt.i)
+		}
+	}
+}
