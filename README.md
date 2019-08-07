@@ -37,7 +37,7 @@ secret_key = ""            # Required: S3 secret key
 endpoint = ""              # Optional: You should specify when you use object storage(S3 compatible) without S3
 region = ""                # Required: S3 region
 disable_ssl = false        # Optional: Default false
-s3_force_path_style = true # Optional: Default true
+s3_force_path_style = true # Optional: Default false
 
 [bucket]
 name = ""                  # Required: Bucket name
