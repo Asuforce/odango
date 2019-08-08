@@ -5,6 +5,8 @@
 
 Odango is server software to deploy.
 
+![Odango](/doc/img/odango.jpg)
+
 ## Description
 
 Odango is a server for deploying archive files like tarball. Deployment can be automated by combining CI with object storage (S3 compatible).  
