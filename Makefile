@@ -36,3 +36,7 @@ release: devel-deps
 lint:
 	go vet ./...
 	golint -set_exit_status ./...
+
+.PHONY: fmt
+fmt:
+	gofmt -s ./
