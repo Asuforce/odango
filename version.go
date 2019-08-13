@@ -4,7 +4,7 @@ package main
 const name = "odango"
 
 // version is application version.
-const version = "0.0.1"
+const version = "0.0.2"
 
 // commit describes latest git commit hash.
 // This is automatically extracted by git describe --always.
