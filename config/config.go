@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"fmt"
@@ -8,26 +8,27 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
-	"github.com/mitchellh/go-homedir"
 )
 
 type (
 	// Config is odango configuration structure
 	Config struct {
-		home       string
-		Server     serverConfig
-		Credential credentialConfig
-		Bucket     bucketConfig
-		SSH        sshConfig `toml:"ssh"`
-		Deploy     deployConfig
+		HomeDir    string
+		Server     Server
+		Credential Credential
+		Bucket     Bucket
+		SSH        SSH `toml:"ssh"`
+		Deploy     Deploy
 	}
 
-	serverConfig struct {
+	// Server is server configuration
+	Server struct {
 		Endpoint string
 		Port     int
 	}
 
-	credentialConfig struct {
+	// Credential is object storage credential
+	Credential struct {
 		AccessKey        string `toml:"access_key"`
 		SecretKey        string `toml:"secret_key"`
 		Endpoint         string
@@ -36,32 +37,37 @@ type (
 		S3ForcePathStyle bool `toml:"s3_force_path_style"`
 	}
 
-	bucketConfig struct {
+	// Bucket is object storage information
+	Bucket struct {
 		Name      string
 		Path      string
 		Extension string
 	}
 
-	sshConfig struct {
+	// SSH is ssh configuration
+	SSH struct {
 		UserName string `toml:"user_name"`
 		KeyPath  string `toml:"key_path"`
 		Hosts    []string
 		Port     int
 	}
 
-	deployConfig struct {
+	// Deploy is deploy configuration
+	Deploy struct {
 		ArchiveDir string `toml:"archive_dir"`
 		DestDir    string `toml:"dest_dir"`
 	}
 )
 
-func (c *Config) readConfig() {
-	c.home, _ = homedir.Dir()
-	if !c.hasFile() {
-		c.createFile()
+// Read is checking and reading odango configuration file
+func (c *Config) Read() error {
+	if !isExist(c.HomeDir + "/.odango") {
+		if err := c.createFile(); err != nil {
+			return err
+		}
 	}
 
-	if _, err := toml.DecodeFile(c.home+"/.odango", &c); err != nil {
+	if _, err := toml.DecodeFile(c.HomeDir+"/.odango", &c); err != nil {
 		log.Fatalf("Unable to credential file, %v", err)
 	}
 
@@ -69,53 +75,52 @@ func (c *Config) readConfig() {
 	c.validateAccessKey()
 	c.validate()
 	c.checkFormat()
+
+	return nil
 }
 
-func (c *Config) hasFile() bool {
-	var file *os.File
-	_, err := os.Stat(c.home + "/.odango")
-	if err != nil {
-		return false
-	}
-	defer file.Close()
-	return true
+func isExist(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
 }
 
-func (c *Config) createFile() {
+func (c *Config) createFile() error {
 	config := `[server]
 #endpoint = "deploy"
-#port = 8080
+#port     = 8080
 
 [credential]
-access_key = ""
-secret_key = ""
-#endpoint = ""
-region = ""
-#disable_ssl = false
+access_key           = ""
+secret_key           = ""
+#endpoint            = ""
+region 	             = ""
+#disable_ssl         = false
 #s3_force_path_style = true
 
 [bucket]
-name = ""
-path = ""
+name       = ""
+path       = ""
 #extension = ".tar.gz"
 
 [ssh]
-#user_name = "" # Default: $USER
-#key_path = ""  # Default: $HOME/.ssh.id_rsa
-hosts = ["", ""]
-#port = 22
+hosts     = ["", ""]
+#user_name = ""      # Default: $USER
+#key_path  = ""      # Default: $HOME/.ssh/id_rsa
+#port      = 22
 
 [deploy]
+dest_dir    = ""
 #archive_dir = "/tmp/odango"
-dest_dir = ""
 `
 
-	file, err := os.Create(c.home + "/.odango")
+	file, err := os.Create(c.HomeDir + "/.odango")
 	if err != nil {
-		log.Fatalf("Failed to create configuration file, %v", err)
+		return err
 	}
 	defer file.Close()
 	fmt.Fprint(file, config)
+
+	return nil
 }
 
 func (c *Config) checkFormat() {
