@@ -94,30 +94,30 @@ func (c *Config) hasFile() bool {
 func (c *Config) createFile() error {
 	config := `[server]
 #endpoint = "deploy"
-#port = 8080
+#port     = 8080
 
 [credential]
-access_key = ""
-secret_key = ""
-#endpoint = ""
-region = ""
-#disable_ssl = false
+access_key           = ""
+secret_key           = ""
+#endpoint            = ""
+region 	             = ""
+#disable_ssl         = false
 #s3_force_path_style = true
 
 [bucket]
-name = ""
-path = ""
+name       = ""
+path       = ""
 #extension = ".tar.gz"
 
 [ssh]
-#user_name = "" # Default: $USER
-#key_path = ""  # Default: $HOME/.ssh.id_rsa
-hosts = ["", ""]
-#port = 22
+hosts     = ["", ""]
+#user_name = ""      # Default: $USER
+#key_path  = ""      # Default: $HOME/.ssh/id_rsa
+#port      = 22
 
 [deploy]
+dest_dir    = ""
 #archive_dir = "/tmp/odango"
-dest_dir = ""
 `
 
 	file, err := os.Create(c.home + "/.odango")
