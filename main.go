@@ -1,40 +1,36 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
-)
 
-var config Config
+	"github.com/Asuforce/odango/config"
+	"github.com/Asuforce/odango/file"
+	"github.com/Asuforce/odango/server"
+)
 
 const workDir = "/tmp/odango/" // TODO: Check when lunch
 
-func deployHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		fmt.Fprint(w, "Method not allowed.\n")
-		return
-	}
-
-	commitID := r.URL.Path[len("/deploy/"):]
-
-	download(commitID)
-
-	hosts := config.SSH.Hosts
-	for i := range hosts {
-		upload(commitID, hosts[i])
-		unarchive(commitID, hosts[i])
-	}
-	fmt.Fprint(w, "Deploy success.\n")
-}
-
 func main() {
-	config = Config{}
+	config := config.Config{}
+	err := config.Read()
+	if err != nil {
+		log.Fatalf("Failed to read configuration. Error: %v\n", err)
+	}
 
-	endpoint := config.Server.Endpoint
-	http.HandleFunc(endpoint, deployHandler)
+	server := server.Server{
+		Endpoint: config.Server.Endpoint,
+		Port:     config.Server.Port,
+		Hosts:    config.SSH.Hosts,
+		File: file.File{
+			WorkDir:    workDir,
+			Credential: config.Credential,
+			Bucket:     config.Bucket,
+			SSH:        config.SSH,
+			Deploy:     config.Deploy,
+		},
+	}
 
-	fmt.Printf("Running server on port: %d endpoint: /%s\nType Ctr-c to shutdown server.\n", config.Server.Port, endpoint)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	if err := server.Run(); err != nil {
+		log.Fatalf("Failed to run server. Error: %v\n", err)
+	}
 }
