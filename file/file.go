@@ -22,29 +22,29 @@ import (
 type File struct {
 	Name       string
 	WorkDir    string
-	credential config.Credential
-	bucket     config.Bucket
-	sshConfig  config.SSH
-	deploy     config.Deploy
+	Credential config.Credential
+	Bucket     config.Bucket
+	SSH        config.SSH
+	Deploy     config.Deploy
 }
 
 // Download is downloading tarball from object storage
 func (f *File) Download() error {
 	sess := session.Must(session.NewSession(&aws.Config{
-		Credentials:      credentials.NewStaticCredentials(f.credential.AccessKey, f.credential.SecretKey, ""),
-		Endpoint:         aws.String(f.credential.Endpoint),
-		Region:           aws.String(f.credential.Region),
-		DisableSSL:       aws.Bool(f.credential.DisableSSL),
-		S3ForcePathStyle: aws.Bool(f.credential.S3ForcePathStyle),
+		Credentials:      credentials.NewStaticCredentials(f.Credential.AccessKey, f.Credential.SecretKey, ""),
+		Endpoint:         aws.String(f.Credential.Endpoint),
+		Region:           aws.String(f.Credential.Region),
+		DisableSSL:       aws.Bool(f.Credential.DisableSSL),
+		S3ForcePathStyle: aws.Bool(f.Credential.S3ForcePathStyle),
 	}))
 
-	if _, err := os.Stat(f.workDir); os.IsNotExist(err) {
-		os.Mkdir(f.workDir, 0755)
+	if _, err := os.Stat(f.WorkDir); os.IsNotExist(err) {
+		os.Mkdir(f.WorkDir, 0755)
 	}
 
-	bucket := f.bucket
-	filename := f.name + bucket.Extension
-	fullPath := f.workDir + filename
+	bucket := f.Bucket
+	filename := f.Name + bucket.Extension
+	fullPath := f.WorkDir + filename
 	file, err := os.Create(fullPath)
 	defer file.Close()
 
@@ -66,18 +66,18 @@ func (f *File) Download() error {
 
 // Unarchive is unarchive tarball each hosts
 func (f *File) Unarchive(host string) error {
-	pubkey, err := publicKey(f.sshConfig.KeyPath)
+	pubkey, err := publicKey(f.SSH.KeyPath)
 	if err != nil {
 		return err
 	}
 
 	c := &ssh.ClientConfig{
-		User:            f.sshConfig.UserName,
+		User:            f.SSH.UserName,
 		Auth:            []ssh.AuthMethod{pubkey},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	port := strconv.Itoa(f.sshConfig.Port)
+	port := strconv.Itoa(f.SSH.Port)
 	hostname := host + ":" + port
 	conn, err := ssh.Dial("tcp", hostname, c)
 	if err != nil {
@@ -120,8 +120,8 @@ func (f *File) runCmd(conn *ssh.Client) error {
 	}
 
 	go io.Copy(os.Stderr, sessStderr)
-	archivePath := f.deploy.ArchiveDir + f.name + f.bucket.Extension
-	cmd := "/bin/tar -zxvf " + archivePath + " -C " + f.deploy.DestDir
+	archivePath := f.Deploy.ArchiveDir + f.Name + f.Bucket.Extension
+	cmd := "/bin/tar -zxvf " + archivePath + " -C " + f.Deploy.DestDir
 	err = sess.Run(cmd)
 	if err != nil {
 		return err
@@ -131,9 +131,9 @@ func (f *File) runCmd(conn *ssh.Client) error {
 
 // Upload is uploading tarball to target host
 func (f *File) Upload(host string) error {
-	clientConfig, _ := auth.PrivateKey(f.sshConfig.UserName, f.sshConfig.KeyPath, ssh.InsecureIgnoreHostKey())
+	clientConfig, _ := auth.PrivateKey(f.SSH.UserName, f.SSH.KeyPath, ssh.InsecureIgnoreHostKey())
 
-	hostname := host + ":" + strconv.Itoa(f.sshConfig.Port)
+	hostname := host + ":" + strconv.Itoa(f.SSH.Port)
 	client := scp.NewClient(hostname, &clientConfig)
 
 	err := client.Connect()
@@ -141,8 +141,8 @@ func (f *File) Upload(host string) error {
 		return err
 	}
 
-	filename := f.name + f.bucket.Extension
-	fullPath := f.workDir + filename
+	filename := f.Name + f.Bucket.Extension
+	fullPath := f.WorkDir + filename
 	d, err := os.Open(fullPath)
 	if err != nil {
 		return err
@@ -150,7 +150,7 @@ func (f *File) Upload(host string) error {
 	defer client.Close()
 	defer d.Close()
 
-	dest := f.deploy.ArchiveDir + filename
+	dest := f.Deploy.ArchiveDir + filename
 	err = client.CopyFile(d, dest, "0755")
 	if err != nil {
 		return err

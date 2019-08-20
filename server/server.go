@@ -10,18 +10,18 @@ import (
 
 // Server is odango server structure
 type Server struct {
-	endpoint string
-	port     int
-	hosts    []string
-	file     file.File
+	Endpoint string
+	Port     int
+	Hosts    []string
+	File     file.File
 }
 
 // Run is running odango server
 func (s *Server) Run() error {
-	http.HandleFunc(s.endpoint, s.deployHandler)
+	http.HandleFunc(s.Endpoint, s.deployHandler)
 
-	fmt.Printf("Running server on port: %d endpoint: /%s\nType Ctr-c to shutdown server.\n", s.port, s.endpoint)
-	if err := http.ListenAndServe(":"+strconv.Itoa(s.port), nil); err != nil {
+	fmt.Printf("Running server on port: %d endpoint: /%s\nType Ctr-c to shutdown server.\n", s.Port, s.Endpoint)
+	if err := http.ListenAndServe(":"+strconv.Itoa(s.Port), nil); err != nil {
 		return err
 	}
 	return nil
@@ -34,19 +34,19 @@ func (s *Server) deployHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.file.Name = r.URL.Path[len("/deploy/"):]
+	s.File.Name = r.URL.Path[len("/deploy/"):]
 
-	if err := s.file.Download(); err != nil {
+	if err := s.File.Download(); err != nil {
 		fmt.Fprintf(w, "Faild to download tarball. Error: %v\n", err)
 		return
 	}
 
-	for _, v := range s.hosts {
-		if err := s.file.Upload(v); err != nil {
+	for _, v := range s.Hosts {
+		if err := s.File.Upload(v); err != nil {
 			fmt.Fprintf(w, "Faild to upload tarball to host %v. Error: %v\n", v, err)
 			return
 		}
-		if err := s.file.Unarchive(v); err != nil {
+		if err := s.File.Unarchive(v); err != nil {
 			fmt.Fprintf(w, "Faild to uparchive tarball to host %v. Error: %v\n", v, err)
 			return
 		}
