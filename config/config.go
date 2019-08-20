@@ -8,13 +8,12 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
-	"github.com/mitchellh/go-homedir"
 )
 
 type (
 	// Config is odango configuration structure
 	Config struct {
-		home       string
+		HomeDir    string
 		Server     Server
 		Credential Credential
 		Bucket     Bucket
@@ -62,14 +61,13 @@ type (
 
 // Read is checking and reading odango configuration file
 func (c *Config) Read() error {
-	c.home, _ = homedir.Dir()
-	if !isExist(c.home + "/.odango") {
+	if !isExist(c.HomeDir + "/.odango") {
 		if err := c.createFile(); err != nil {
 			return err
 		}
 	}
 
-	if _, err := toml.DecodeFile(c.home+"/.odango", &c); err != nil {
+	if _, err := toml.DecodeFile(c.HomeDir+"/.odango", &c); err != nil {
 		log.Fatalf("Unable to credential file, %v", err)
 	}
 
@@ -115,7 +113,7 @@ dest_dir    = ""
 #archive_dir = "/tmp/odango"
 `
 
-	file, err := os.Create(c.home + "/.odango")
+	file, err := os.Create(c.HomeDir + "/.odango")
 	if err != nil {
 		return err
 	}

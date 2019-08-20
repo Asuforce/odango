@@ -6,14 +6,19 @@ import (
 	"github.com/Asuforce/odango/config"
 	"github.com/Asuforce/odango/file"
 	"github.com/Asuforce/odango/server"
+	"github.com/mitchellh/go-homedir"
 )
 
 const workDir = "/tmp/odango/" // TODO: Check when lunch
 
 func main() {
-	config := config.Config{}
-	err := config.Read()
+	h, err := homedir.Dir()
 	if err != nil {
+		log.Fatalf("Failed to get home directry path. Error: %v\n", err)
+	}
+	config := config.Config{HomeDir: h}
+
+	if err := config.Read(); err != nil {
 		log.Fatalf("Failed to read configuration. Error: %v\n", err)
 	}
 
