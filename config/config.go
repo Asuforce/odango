@@ -63,7 +63,7 @@ type (
 // Read is checking and reading odango configuration file
 func (c *Config) Read() error {
 	c.home, _ = homedir.Dir()
-	if !c.hasFile() {
+	if !isExist(c.home + "/.odango") {
 		if err := c.createFile(); err != nil {
 			return err
 		}
@@ -81,14 +81,9 @@ func (c *Config) Read() error {
 	return nil
 }
 
-func (c *Config) hasFile() bool {
-	var file *os.File
-	_, err := os.Stat(c.home + "/.odango")
-	if err != nil {
-		return false
-	}
-	defer file.Close()
-	return true
+func isExist(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
 }
 
 func (c *Config) createFile() error {
