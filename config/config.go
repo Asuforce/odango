@@ -60,10 +60,13 @@ type (
 	}
 )
 
-func (c *Config) readConfig() {
+// Read is checking and reading odango configuration file
+func (c *Config) Read() error {
 	c.home, _ = homedir.Dir()
 	if !c.hasFile() {
-		c.createFile()
+		if err := c.createFile(); err != nil {
+			return err
+		}
 	}
 
 	if _, err := toml.DecodeFile(c.home+"/.odango", &c); err != nil {
@@ -74,6 +77,8 @@ func (c *Config) readConfig() {
 	c.validateAccessKey()
 	c.validate()
 	c.checkFormat()
+
+	return nil
 }
 
 func (c *Config) hasFile() bool {
@@ -86,7 +91,7 @@ func (c *Config) hasFile() bool {
 	return true
 }
 
-func (c *Config) createFile() {
+func (c *Config) createFile() error {
 	config := `[server]
 #endpoint = "deploy"
 #port = 8080
@@ -117,10 +122,12 @@ dest_dir = ""
 
 	file, err := os.Create(c.home + "/.odango")
 	if err != nil {
-		log.Fatalf("Failed to create configuration file, %v", err)
+		return err
 	}
 	defer file.Close()
 	fmt.Fprint(file, config)
+
+	return nil
 }
 
 func (c *Config) checkFormat() {
