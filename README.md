@@ -49,8 +49,8 @@ extension = ""              # Optional: Deploy files extension. Default .tar.gz 
 [ssh]
 hosts     = ["", ""]        # Required: Deployment target servers list
 user_name = ""              # Optional: Default $USER
-key_path = ""               # Optional: Default $HOME/.ssh/id_rsa
-port     = 22               # Optional: Default 22
+key_path  = ""              # Optional: Default $HOME/.ssh/id_rsa
+port      = 22              # Optional: Default 22
 
 [deploy]
 dest_dir    = ""            # Required: Specify destination dir in target servers
